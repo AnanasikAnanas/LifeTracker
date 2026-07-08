@@ -1,5 +1,6 @@
 export type View =
   | "home"
+  | "timeline"
   | "add"
   | "tasks"
   | "calendar"
@@ -67,6 +68,8 @@ export interface FinanceRecord {
   date: string;
 }
 
+export type FinanceBudgets = Record<string, number>;
+
 export interface Habit {
   id: string;
   title: string;
@@ -93,6 +96,7 @@ export interface AppState {
   meetings: Meeting[];
   meals: Meal[];
   finances: FinanceRecord[];
+  financeBudgets: FinanceBudgets;
   habits: Habit[];
   notes: Note[];
   goals: Goal[];

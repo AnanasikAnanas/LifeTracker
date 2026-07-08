@@ -23,6 +23,7 @@ const paths: Record<string, string[]> = {
   add: ["M12 5v14M5 12h14"],
   plus: ["M12 5v14M5 12h14"],
   tasks: ["M7 7h11M7 12h11M7 17h11", "M4 7h.01M4 12h.01M4 17h.01"],
+  timeline: ["M12 5v14", "M7 8h10", "M7 12h10", "M7 16h10", "M5 8h.01M5 12h.01M5 16h.01"],
   task: ["M5 12l4 4L19 6"],
   check: ["M5 12l4 4L19 6"],
   calendar: ["M5 7h14v12H5z", "M8 4v5M16 4v5M5 11h14"],

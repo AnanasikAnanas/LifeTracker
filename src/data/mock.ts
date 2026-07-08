@@ -72,6 +72,12 @@ export const initialState: AppState = {
       date: new Date().toISOString()
     }
   ],
+  financeBudgets: {
+    Еда: 18000,
+    Транспорт: 9000,
+    Развлечения: 8000,
+    Разное: 12000
+  },
   habits: [
     { id: "h1", title: "Вода 2 л", streak: 12, progress: 86, doneToday: true },
     { id: "h2", title: "Чтение", streak: 6, progress: 64, doneToday: false },

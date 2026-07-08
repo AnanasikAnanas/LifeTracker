@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Dashboard } from "./screens/Dashboard";
+import { Timeline } from "./screens/Timeline";
 import { AddEntry } from "./screens/AddEntry";
 import { Tasks } from "./screens/Tasks";
 import { Calendar } from "./screens/Calendar";
@@ -245,6 +246,16 @@ export default function App() {
     setState((current) => ({ ...current, calorieGoal: Math.max(1, calorieGoal) }));
   }
 
+  function updateFinanceBudget(category: string, value: number) {
+    setState((current) => ({
+      ...current,
+      financeBudgets: {
+        ...current.financeBudgets,
+        [category]: Math.max(0, value)
+      }
+    }));
+  }
+
   function exportData() {
     const exportedAt = new Date().toISOString();
     downloadJson(`life-tracker-${exportedAt.slice(0, 10)}.json`, { exportedAt, state });
@@ -279,6 +290,7 @@ export default function App() {
         onNavigate={navigate}
       />
     ),
+    timeline: <Timeline state={state} onAdd={openAdd} />,
     add: <AddEntry initialType={preferredType} onAdd={addEntry} onCancel={() => navigate("home")} />,
     tasks: <Tasks tasks={state.tasks} onAdd={() => openAdd("task")} onToggle={toggleTask} onDelete={(id) => deleteEntry("task", id)} />,
     calendar: <Calendar meetings={state.meetings} onAdd={() => openAdd("meeting")} onDelete={(id) => deleteEntry("meeting", id)} />,
@@ -291,7 +303,15 @@ export default function App() {
         onUpdateGoal={updateCalorieGoal}
       />
     ),
-    finances: <Finances finances={state.finances} onAdd={() => openAdd("finance")} onDelete={(id) => deleteEntry("finance", id)} />,
+    finances: (
+      <Finances
+        finances={state.finances}
+        budgets={state.financeBudgets}
+        onAdd={() => openAdd("finance")}
+        onDelete={(id) => deleteEntry("finance", id)}
+        onUpdateBudget={updateFinanceBudget}
+      />
+    ),
     habits: <Habits habits={state.habits} onAdd={() => openAdd("habit")} onToggle={toggleHabit} onDelete={(id) => deleteEntry("habit", id)} />,
     records: <Records state={state} onAdd={openAdd} onDelete={deleteEntry} />,
     stats: (

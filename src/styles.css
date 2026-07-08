@@ -141,6 +141,9 @@ button {
 .chart-card,
 .data-card,
 .record-row,
+.feed-row,
+.budget-panel,
+.budget-row,
 .empty-state {
   border: 1px solid var(--line);
   background:
@@ -432,11 +435,76 @@ p {
 .data-card,
 .voice-card,
 .finance-summary,
+.budget-panel,
 .nutrition-summary {
   display: grid;
   gap: 16px;
   padding: 20px;
   border-radius: var(--radius-xl);
+}
+
+.timeline-feed {
+  display: grid;
+  gap: 12px;
+  position: relative;
+}
+
+.feed-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 13px;
+  min-height: 82px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+}
+
+.feed-row time,
+.feed-row span {
+  display: block;
+  color: var(--muted);
+}
+
+.feed-row time {
+  margin-bottom: 4px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.feed-row strong {
+  display: block;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.feed-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  color: var(--accent);
+  background: rgba(110, 168, 255, 0.12);
+}
+
+.feed-icon.mint {
+  color: var(--mint);
+  background: rgba(110, 223, 194, 0.12);
+}
+
+.feed-icon.amber {
+  color: var(--amber);
+  background: rgba(233, 185, 110, 0.13);
+}
+
+.feed-icon.rose {
+  color: var(--rose);
+  background: rgba(240, 131, 166, 0.13);
+}
+
+.feed-icon.violet {
+  color: var(--accent-2);
+  background: rgba(139, 125, 255, 0.13);
 }
 
 .voice-card {
@@ -815,6 +883,57 @@ p {
 .finance-summary h2 {
   margin-top: 4px;
   font-size: 2rem;
+}
+
+.budget-panel {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--radius-xl);
+}
+
+.budget-panel h2 {
+  margin-top: 4px;
+  font-size: 1.28rem;
+}
+
+.budget-list {
+  display: grid;
+  gap: 10px;
+}
+
+.budget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+}
+
+.budget-row > div {
+  min-width: 0;
+}
+
+.budget-row span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.budget-row input {
+  width: 92px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  outline: none;
+  padding: 0 10px;
+  color: var(--text);
+  background: rgba(8, 9, 12, 0.38);
+}
+
+.budget-row .progress-wrap {
+  grid-column: 1 / -1;
 }
 
 .finance-split {

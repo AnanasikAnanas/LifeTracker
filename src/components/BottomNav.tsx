@@ -3,9 +3,9 @@ import type { View } from "../types";
 
 const items: Array<{ view: View; label: string }> = [
   { view: "home", label: "День" },
-  { view: "tasks", label: "Задачи" },
+  { view: "timeline", label: "Лента" },
   { view: "add", label: "Добавить" },
-  { view: "records", label: "Журнал" },
+  { view: "finances", label: "Деньги" },
   { view: "stats", label: "Итоги" }
 ];
 

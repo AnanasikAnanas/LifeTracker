@@ -69,6 +69,50 @@ function inferFinanceKind(text: string): FinanceKind {
   return /(доход|получил|получила|зарплат|аванс|перевод пришел|кэшбек)/i.test(text) ? "income" : "expense";
 }
 
+function inferEntryType(text: string, currentType: EntryType): EntryType {
+  if (/(расход|доход|потратил|потратила|купил|купила|руб|₽|деньг|зарплат|аванс|кэшбек)/i.test(text)) {
+    return "finance";
+  }
+
+  if (/(встреч|созвон|звонок|событие|календар|напомни)/i.test(text)) {
+    return "meeting";
+  }
+
+  if (/(съел|съела|калори|ккал|белк|жир|углевод|завтрак|обед|ужин)/i.test(text)) {
+    return "meal";
+  }
+
+  if (/(привычк|каждый день|серия|трекать|отслеживать)/i.test(text)) {
+    return "habit";
+  }
+
+  if (/(цель|хочу|достичь|план на месяц)/i.test(text)) {
+    return "goal";
+  }
+
+  if (/(идея|придумал|придумала|инсайт)/i.test(text)) {
+    return "idea";
+  }
+
+  if (/(заметка|запомни|мысль|наблюдение)/i.test(text)) {
+    return "note";
+  }
+
+  if (/(задач|сделать|надо|нужно|срочно|важно)/i.test(text)) {
+    return "task";
+  }
+
+  return currentType;
+}
+
+function inferCategory(text: string, kind: FinanceKind) {
+  if (kind === "income") return "Доход";
+  if (/(кофе|еда|продукт|завтрак|обед|ужин|ресторан|кафе)/i.test(text)) return "Еда";
+  if (/(такси|метро|автобус|транспорт|бензин|парков)/i.test(text)) return "Транспорт";
+  if (/(кино|игр|подписк|развлеч|бар|концерт)/i.test(text)) return "Развлечения";
+  return "Разное";
+}
+
 function applyVoiceToPayload(type: EntryType, text: string, current: Record<string, string>) {
   const amount = extractFirstNumber(text);
   const title = cleanTitle(text) || text;
@@ -79,7 +123,7 @@ function applyVoiceToPayload(type: EntryType, text: string, current: Record<stri
       title,
       amount: amount || current.amount,
       kind: inferFinanceKind(text),
-      category: current.category || (inferFinanceKind(text) === "income" ? "Доход" : "Разное"),
+      category: current.category || inferCategory(text, inferFinanceKind(text)),
       note: text
     };
   }
@@ -217,6 +261,14 @@ export function AddEntry({
   }
 
   function applyVoiceText(text: string) {
+    const nextType = inferEntryType(text, type);
+
+    if (nextType !== type) {
+      setType(nextType);
+      setPayload(applyVoiceToPayload(nextType, text, defaults[nextType]));
+      return;
+    }
+
     setPayload((current) => applyVoiceToPayload(type, text, current));
   }
 
@@ -271,7 +323,7 @@ export function AddEntry({
         <div>
           <p className="eyebrow">Голосовой ввод</p>
           <h2>{voiceStatus}</h2>
-          <span>{speechSupported ? "Скажите фразу, и я заполню форму." : "Если кнопка недоступна, вставьте текст вручную."}</span>
+          <span>{speechSupported ? "Скажите фразу, я определю тип записи и заполню форму." : "Если кнопка недоступна, вставьте текст вручную."}</span>
         </div>
         <button className={`voice-button ${isListening ? "listening" : ""}`} type="button" onClick={isListening ? stopVoiceInput : startVoiceInput}>
           <Icon name={isListening ? "micOff" : "mic"} size={21} />

@@ -31,6 +31,7 @@ const paths: Record<string, string[]> = {
   nutrition: ["M7 4v8a5 5 0 0 0 10 0V4", "M12 14v7"],
   meal: ["M7 4v8a5 5 0 0 0 10 0V4", "M12 14v7"],
   finance: ["M4 7h16v12H4z", "M4 10h16", "M16 15h2", "M7 7V5h10v2"],
+  finances: ["M4 7h16v12H4z", "M4 10h16", "M16 15h2", "M7 7V5h10v2"],
   habits: ["M12 21a7 7 0 0 0 7-7c0-5-7-11-7-11S5 9 5 14a7 7 0 0 0 7 7z"],
   habit: ["M12 21a7 7 0 0 0 7-7c0-5-7-11-7-11S5 9 5 14a7 7 0 0 0 7 7z"],
   stats: ["M5 19V9M12 19V5M19 19v-7"],
@@ -48,9 +49,11 @@ const paths: Record<string, string[]> = {
 };
 
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
+  const iconPaths = paths[name] ?? paths.note;
+
   return (
     <svg className="icon" width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      {paths[name].map((path) => (
+      {iconPaths.map((path) => (
         <path key={path} d={path} />
       ))}
     </svg>

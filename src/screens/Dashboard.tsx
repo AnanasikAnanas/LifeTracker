@@ -10,12 +10,20 @@ const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
   month: "long"
 });
 
+const moneyFormatter = new Intl.NumberFormat("ru-RU", {
+  style: "currency",
+  currency: "RUB",
+  maximumFractionDigits: 0
+});
+
 export function Dashboard({
   state,
   completedTasks,
   completedHabits,
   dayProgress,
   eatenCalories,
+  financeIncome,
+  financeExpense,
   user,
   isTelegram,
   onAdd,
@@ -26,6 +34,8 @@ export function Dashboard({
   completedHabits: number;
   dayProgress: number;
   eatenCalories: number;
+  financeIncome: number;
+  financeExpense: number;
   user?: TelegramUser;
   isTelegram: boolean;
   onAdd: (type: EntryType) => void;
@@ -35,6 +45,7 @@ export function Dashboard({
   const remainingTasks = state.tasks.length - completedTasks;
   const habitPercent = state.habits.length ? Math.round((completedHabits / state.habits.length) * 100) : 0;
   const displayName = user?.first_name || user?.username || "Егор";
+  const balance = financeIncome - financeExpense;
 
   return (
     <section className="screen dashboard">
@@ -62,8 +73,8 @@ export function Dashboard({
         {[
           ["task", "Задача"],
           ["note", "Заметка"],
-          ["meal", "Еда"],
-          ["idea", "Идея"]
+          ["finance", "Финансы"],
+          ["meal", "Еда"]
         ].map(([type, label]) => (
           <button className="quick-action" key={type} onClick={() => onAdd(type as EntryType)} type="button">
             <Icon name={type as EntryType} size={18} />
@@ -82,12 +93,12 @@ export function Dashboard({
           onClick={() => onNavigate("tasks")}
         />
         <MetricCard
-          title="Идеи"
-          value={String(state.ideas.length)}
-          caption="зафиксировано"
-          icon="spark"
-          accent="violet"
-          onClick={() => onNavigate("records")}
+          title="Финансы"
+          value={moneyFormatter.format(balance)}
+          caption={`расход ${moneyFormatter.format(financeExpense)}`}
+          icon="finance"
+          accent={balance >= 0 ? "mint" : "rose"}
+          onClick={() => onNavigate("finances")}
         />
         <MetricCard
           title="Встречи"

@@ -16,7 +16,7 @@ export function Records({
     <section className="screen">
       <SectionHeader title="Журнал" subtitle="идеи, заметки, цели" actionLabel="Добавить заметку" onAction={() => onAdd("note")} />
 
-      <div className="quick-row three">
+      <div className="quick-row">
         <button className="quick-action" type="button" onClick={() => onAdd("idea")}>
           <Icon name="idea" size={18} />
           <span>Идея</span>
@@ -24,6 +24,10 @@ export function Records({
         <button className="quick-action" type="button" onClick={() => onAdd("note")}>
           <Icon name="note" size={18} />
           <span>Заметка</span>
+        </button>
+        <button className="quick-action" type="button" onClick={() => onAdd("finance")}>
+          <Icon name="finance" size={18} />
+          <span>Финансы</span>
         </button>
         <button className="quick-action" type="button" onClick={() => onAdd("goal")}>
           <Icon name="goal" size={18} />

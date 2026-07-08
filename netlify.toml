@@ -10,4 +10,4 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Permissions-Policy = "camera=(), microphone=(self), geolocation=()"

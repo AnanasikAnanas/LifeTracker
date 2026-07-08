@@ -5,6 +5,7 @@ export type View =
   | "calendar"
   | "nutrition"
   | "habits"
+  | "finances"
   | "records"
   | "stats";
 
@@ -14,6 +15,7 @@ export type EntryType =
   | "meeting"
   | "note"
   | "meal"
+  | "finance"
   | "habit"
   | "goal";
 
@@ -52,6 +54,19 @@ export interface Meal {
   carbs: number;
 }
 
+export type FinanceKind = "expense" | "income";
+
+export interface FinanceRecord {
+  id: string;
+  title: string;
+  amount: number;
+  kind: FinanceKind;
+  category: string;
+  account: string;
+  note: string;
+  date: string;
+}
+
 export interface Habit {
   id: string;
   title: string;
@@ -77,6 +92,7 @@ export interface AppState {
   ideas: Idea[];
   meetings: Meeting[];
   meals: Meal[];
+  finances: FinanceRecord[];
   habits: Habit[];
   notes: Note[];
   goals: Goal[];

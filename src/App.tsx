@@ -5,6 +5,7 @@ import { Tasks } from "./screens/Tasks";
 import { Calendar } from "./screens/Calendar";
 import { Nutrition } from "./screens/Nutrition";
 import { Habits } from "./screens/Habits";
+import { Finances } from "./screens/Finances";
 import { Records } from "./screens/Records";
 import { Stats } from "./screens/Stats";
 import { BottomNav } from "./components/BottomNav";
@@ -12,7 +13,7 @@ import { initialState } from "./data/mock";
 import { loadLocalState, loadStoredState, saveStoredState } from "./storage";
 import { bindTelegramBackButton, getTelegramUser, isTelegramMiniApp, showConfirm, tapFeedback } from "./telegram";
 import type { TelegramUser } from "./telegram";
-import type { AppState, EntryType, Habit, Priority, Task, View } from "./types";
+import type { AppState, EntryType, FinanceKind, Habit, Priority, Task, View } from "./types";
 
 function createId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -27,6 +28,10 @@ function downloadJson(filename: string, payload: unknown) {
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function normalizeFinanceKind(value: string): FinanceKind {
+  return value === "income" || /доход|приход|получ/i.test(value) ? "income" : "expense";
 }
 
 export default function App() {
@@ -72,6 +77,8 @@ export default function App() {
   const completedTasks = state.tasks.filter((task) => task.done).length;
   const eatenCalories = state.meals.reduce((sum, meal) => sum + meal.calories, 0);
   const completedHabits = state.habits.filter((habit) => habit.doneToday).length;
+  const financeIncome = state.finances.filter((item) => item.kind === "income").reduce((sum, item) => sum + item.amount, 0);
+  const financeExpense = state.finances.filter((item) => item.kind === "expense").reduce((sum, item) => sum + item.amount, 0);
 
   const dayProgress = useMemo(() => {
     const taskScore = state.tasks.length ? completedTasks / state.tasks.length : 0;
@@ -144,6 +151,25 @@ export default function App() {
         };
       }
 
+      if (type === "finance") {
+        return {
+          ...current,
+          finances: [
+            {
+              id: createId("finance"),
+              title: payload.title || "Финансовая операция",
+              amount: Number(payload.amount || 0),
+              kind: normalizeFinanceKind(payload.kind || "expense"),
+              category: payload.category || "Разное",
+              account: payload.account || "Карта",
+              note: payload.note || "",
+              date: new Date().toISOString()
+            },
+            ...current.finances
+          ]
+        };
+      }
+
       if (type === "habit") {
         const habit: Habit = {
           id: createId("habit"),
@@ -176,7 +202,7 @@ export default function App() {
     });
 
     tapFeedback("medium");
-    setView("home");
+    setView(type === "finance" ? "finances" : "home");
   }
 
   function toggleTask(id: string) {
@@ -208,6 +234,7 @@ export default function App() {
       if (type === "idea") return { ...current, ideas: current.ideas.filter((item) => item.id !== id) };
       if (type === "meeting") return { ...current, meetings: current.meetings.filter((item) => item.id !== id) };
       if (type === "meal") return { ...current, meals: current.meals.filter((item) => item.id !== id) };
+      if (type === "finance") return { ...current, finances: current.finances.filter((item) => item.id !== id) };
       if (type === "habit") return { ...current, habits: current.habits.filter((item) => item.id !== id) };
       if (type === "goal") return { ...current, goals: current.goals.filter((item) => item.id !== id) };
       return { ...current, notes: current.notes.filter((item) => item.id !== id) };
@@ -244,6 +271,8 @@ export default function App() {
         completedHabits={completedHabits}
         dayProgress={dayProgress}
         eatenCalories={eatenCalories}
+        financeIncome={financeIncome}
+        financeExpense={financeExpense}
         user={telegramUser}
         isTelegram={isTelegramMiniApp()}
         onAdd={openAdd}
@@ -262,6 +291,7 @@ export default function App() {
         onUpdateGoal={updateCalorieGoal}
       />
     ),
+    finances: <Finances finances={state.finances} onAdd={() => openAdd("finance")} onDelete={(id) => deleteEntry("finance", id)} />,
     habits: <Habits habits={state.habits} onAdd={() => openAdd("habit")} onToggle={toggleHabit} onDelete={(id) => deleteEntry("habit", id)} />,
     records: <Records state={state} onAdd={openAdd} onDelete={deleteEntry} />,
     stats: (
@@ -270,6 +300,8 @@ export default function App() {
         completedTasks={completedTasks}
         completedHabits={completedHabits}
         eatenCalories={eatenCalories}
+        financeIncome={financeIncome}
+        financeExpense={financeExpense}
         dayProgress={dayProgress}
         onExport={exportData}
         onReset={resetData}

@@ -11,6 +11,7 @@ export const entryTypes: Array<{
   { id: "meeting", title: "Встреча", caption: "Событие в календаре", icon: "calendar" },
   { id: "note", title: "Заметка", caption: "Свободная запись", icon: "note" },
   { id: "meal", title: "Прием пищи", caption: "Калории и БЖУ", icon: "meal" },
+  { id: "finance", title: "Финансы", caption: "Доход или расход", icon: "finance" },
   { id: "habit", title: "Привычка", caption: "Повторяемое действие", icon: "habit" },
   { id: "goal", title: "Цель", caption: "Длинный фокус", icon: "target" }
 ];
@@ -48,6 +49,28 @@ export const initialState: AppState = {
     { id: "f1", title: "Овсянка с ягодами", calories: 430, protein: 18, fat: 12, carbs: 64 },
     { id: "f2", title: "Курица, рис и салат", calories: 720, protein: 48, fat: 21, carbs: 82 },
     { id: "f3", title: "Йогурт и орехи", calories: 260, protein: 16, fat: 14, carbs: 20 }
+  ],
+  finances: [
+    {
+      id: "money1",
+      title: "Кофе и завтрак",
+      amount: 420,
+      kind: "expense",
+      category: "Еда",
+      account: "Карта",
+      note: "Перед работой",
+      date: new Date().toISOString()
+    },
+    {
+      id: "money2",
+      title: "Фриланс-проект",
+      amount: 12000,
+      kind: "income",
+      category: "Работа",
+      account: "Карта",
+      note: "Аванс",
+      date: new Date().toISOString()
+    }
   ],
   habits: [
     { id: "h1", title: "Вода 2 л", streak: 12, progress: 86, doneToday: true },

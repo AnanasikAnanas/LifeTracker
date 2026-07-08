@@ -5,12 +5,19 @@ import { Icon } from "../components/Icon";
 import type { AppState } from "../types";
 
 const weeklyActivity = [44, 58, 72, 63, 88, 69, 81];
+const moneyFormatter = new Intl.NumberFormat("ru-RU", {
+  style: "currency",
+  currency: "RUB",
+  maximumFractionDigits: 0
+});
 
 export function Stats({
   state,
   completedTasks,
   completedHabits,
   eatenCalories,
+  financeIncome,
+  financeExpense,
   dayProgress,
   onExport,
   onReset
@@ -19,11 +26,14 @@ export function Stats({
   completedTasks: number;
   completedHabits: number;
   eatenCalories: number;
+  financeIncome: number;
+  financeExpense: number;
   dayProgress: number;
   onExport: () => void;
   onReset: () => void;
 }) {
   const habitProgress = state.habits.length ? Math.round((completedHabits / state.habits.length) * 100) : 0;
+  const financeBalance = financeIncome - financeExpense;
 
   return (
     <section className="screen">
@@ -38,8 +48,8 @@ export function Stats({
       <div className="bento-grid">
         <MetricCard title="Задачи" value={String(completedTasks)} caption="выполнено" icon="task" accent="blue" />
         <MetricCard title="Идеи" value={String(state.ideas.length)} caption="записано" icon="spark" accent="violet" />
-        <MetricCard title="Встречи" value={String(state.meetings.length)} caption="в календаре" icon="calendar" accent="mint" />
-        <MetricCard title="Калории" value={String(eatenCalories)} caption="сегодня" icon="meal" accent="amber" />
+        <MetricCard title="Расходы" value={moneyFormatter.format(financeExpense)} caption={`доход ${moneyFormatter.format(financeIncome)}`} icon="finance" accent="amber" />
+        <MetricCard title="Калории" value={String(eatenCalories)} caption="сегодня" icon="meal" accent="mint" />
       </div>
 
       <article className="chart-card">
@@ -52,6 +62,14 @@ export function Stats({
             <span key={index} style={{ height: `${value}%` }} />
           ))}
         </div>
+      </article>
+
+      <article className="focus-card">
+        <div>
+          <p className="eyebrow">Финансовый итог</p>
+          <h2>{moneyFormatter.format(financeBalance)}</h2>
+        </div>
+        <ProgressBar value={financeIncome ? Math.min(Math.round((financeExpense / financeIncome) * 100), 100) : 0} label="доля расходов" />
       </article>
 
       <article className="focus-card">
